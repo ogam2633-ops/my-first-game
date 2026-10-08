@@ -1,0 +1,1050 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>탐험가의 포켓몬 도감 · Poké Field Notes</title>
+  <style>
+    :root { color-scheme: light; font-family: "Malgun Gothic", system-ui, sans-serif; color: #273d3b; background: #142a29; font-synthesis: none; }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; scroll-padding-top: 24px; }
+    body { margin: 0; padding: 38px 24px 60px; background: radial-gradient(ellipse at 8% 0%, #39524a 0, transparent 50%), repeating-linear-gradient(0deg, #ffffff04 0 1px, transparent 1px 40px), repeating-linear-gradient(90deg, #ffffff04 0 1px, transparent 1px 40px), #142a29; }
+    main { --accent: #769e68; --scene: #e4efb6; --glow: #b8d79b; max-width: 1140px; margin: auto; background: #f4f1e7; border: 1px solid #617067; border-radius: 22px; box-shadow: 0 25px 70px #071b2870; overflow: hidden; }
+    header { padding: 28px 38px 35px; color: #f7f3e5; background: #1e3835; position: relative; isolation: isolate; overflow: hidden; }
+    header::after { content: ''; position: absolute; width: 300px; height: 300px; border: 1px solid #d7e9ad20; border-radius: 50%; right: -50px; top: -90px; box-shadow: 0 0 0 28px #d7e9ad08, 0 0 0 70px #d7e9ad05; z-index: -1; }
+    .masthead { display: flex; align-items: center; gap: 12px; padding-bottom: 22px; border-bottom: 1px solid #72857850; margin-bottom: 27px; }
+    .device-lights { display: flex; align-items: center; gap: 5px; }
+    .lens { width: 24px; height: 24px; border: 2px solid #cfe0c1; border-radius: 50%; background: radial-gradient(circle at 35% 30%, #f2ffe0 0 12%, #a6d69b 20% 50%, #668773 70%); }
+    .led { width: 5px; height: 5px; border-radius: 50%; background: #d1e593; }
+    .led:last-child { background: #e79567; }
+    .brand { font: 800 12px ui-monospace, monospace; letter-spacing: .16em; }
+    .edition { margin-left: auto; font: 10px ui-monospace, monospace; letter-spacing: .09em; color: #c3d0bd; }
+    .heading-row { display: flex; justify-content: space-between; align-items: end; gap: 20px; }
+    .eyebrow { font: 700 10px ui-monospace, monospace; letter-spacing: .18em; color: #d7e9ad; }
+    h1 { font-size: clamp(32px, 5vw, 52px); line-height: 1.3; margin: 9px 0 13px; letter-spacing: -.065em; font-weight: 900; }
+    .intro { font-size: 13px; margin: 0; color: #bdcdbf; line-height: 1.9; }
+    .field-stamp { flex-shrink: 0; border: 1px solid #acbe92; color: #d9e8b8; border-radius: 50%; width: 87px; height: 87px; display: grid; place-content: center; text-align: center; transform: rotate(9deg); font: 10px/1.8 ui-monospace, monospace; }
+    .field-stamp strong { font-size: 25px; letter-spacing: .04em; }
+    .shell { padding: 28px 30px 30px; }
+    .panel { background: #fffdf6; border: 1px solid #d6dccd; border-radius: 13px; padding: 25px; }
+    .search-panel { padding: 0 0 22px; border: 0; border-bottom: 1px solid #cdd3c3; border-radius: 0; background: transparent; }
+    .search-topline { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 11px; }
+    label { display: block; font-size: 12px; font-weight: 800; }
+    .keyboard-hint { font: 10px ui-monospace, monospace; color: #657767; }
+    .search-row { display: flex; gap: 8px; }
+    input { min-width: 0; flex: 1; padding: 17px 18px; border: 1px solid #aebaad; border-radius: 8px; font: inherit; font-size: 14px; background: #fffef9; color: #233d35; box-shadow: inset 0 2px 4px #213e2905; }
+    input::placeholder { color: #788779; }
+    button { border: 1px solid transparent; border-radius: 8px; background: #2b483d; color: #fffdf0; padding: 14px 24px; font: inherit; font-size: 13px; font-weight: 700; cursor: pointer; transition: background .18s, transform .18s, box-shadow .18s; }
+    button:hover { background: #3e5f48; box-shadow: 0 4px 12px #223c2520; }
+    button:active { transform: translateY(1px); }
+    input:focus-visible, button:focus-visible, a:focus-visible, summary:focus-visible { outline: 3px solid #bd6028; outline-offset: 3px; }
+    button[type="submit"] { background: #d57843; color: #231b15; font-weight: 900; min-width: 146px; }
+    button[type="submit"]:hover { background: #e88b55; }
+    .hint, .section-note { color: #647364; font-size: 11px; line-height: 1.9; margin: 10px 0 0; }
+    #status { font-size: 12px; line-height: 1.8; margin: 17px 0; padding-left: 13px; border-left: 3px solid #aeb991; overflow-wrap: anywhere; }
+    #status[data-kind="error"], #matchup-status[data-kind="error"], .extra-status[data-kind="error"] { color: #a03332; border-color: #bc5750; }
+    #status[data-kind="success"] { color: #3d6749; border-color: #6e9754; }
+    .recent { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-top: 14px; }
+    .recent-label { font-size: 10px; color: #66745e; font-weight: 700; }
+    #recent-list { display: flex; flex-wrap: wrap; gap: 6px; }
+    .recent-button { background: #e5e9d9; color: #40563d; padding: 5px 9px; font-size: 11px; border-radius: 5px; }
+    .recent-button:hover { background: #d7dfc4; }
+    .recent-button[aria-current="true"] { border-color: #718d5b; }
+    .result { --accent: #769e68; }
+    .overview { display: grid; grid-template-columns: 1.05fr 1fr; gap: 34px; align-items: center; padding: 0; overflow: hidden; position: relative; border-color: #bac9b1; }
+    .viewer { align-self: stretch; background: var(--scene); padding: 18px; border-right: 1px solid #283e3020; transition: background .45s; }
+    .viewer-label { display: flex; align-items: center; justify-content: space-between; font: 9px/1.7 ui-monospace, monospace; letter-spacing: .1em; color: #38513d; }
+    .viewer-label span:first-child::before { content: ''; display: inline-block; width: 5px; height: 5px; border-radius: 50%; background: #3b6548; margin-right: 6px; }
+    .art { min-height: 278px; display: grid; place-items: center; position: relative; isolation: isolate; overflow: hidden; background: linear-gradient(90deg, #ffffff30 1px, transparent 1px), linear-gradient(#ffffff30 1px, transparent 1px); background-size: 28px 28px; margin-top: 10px; border-radius: 8px; }
+    .art::before { content: ''; position: absolute; width: 190px; height: 190px; border: 1px solid #38513d30; border-radius: 50%; box-shadow: 0 0 0 24px #ffffff20, 0 0 0 25px #38513d12, 0 0 0 55px #ffffff12; z-index: -1; }
+    .art::after { content: ''; position: absolute; width: 70%; height: 1px; background: #3b674024; transform: rotate(-45deg); z-index: -1; }
+    .art img { width: 240px; max-width: 100%; height: 240px; object-fit: contain; image-rendering: pixelated; filter: drop-shadow(0 14px 3px #243a2520); animation: sprite-arrive .5s ease-out; }
+    @keyframes sprite-arrive { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+    #image-note { text-align: center; color: #405640; line-height: 1.8; font-size: 12px; max-width: 230px; }
+    .viewer-bottom { display: flex; justify-content: space-between; align-items: center; margin-top: 10px; }
+    .viewer-dashes { font: 10px ui-monospace, monospace; letter-spacing: 2px; color: #57724c; }
+    #type-caption { color: #3e593b; font-size: 11px; font-weight: 700; }
+    .identity { padding: 28px 28px 28px 0; min-width: 0; }
+    .specimen-label { font: 10px ui-monospace, monospace; letter-spacing: .15em; color: #64755e; margin: 0 0 9px; }
+    #number { display: inline-block; color: #3f583d; font: 700 12px ui-monospace, monospace; padding: 5px 9px; background: var(--scene); border-radius: 4px; letter-spacing: .05em; margin: 0; }
+    #name { font: 900 clamp(26px, 4vw, 43px)/1.2 system-ui, sans-serif; margin: 14px 0 19px; letter-spacing: -.05em; overflow-wrap: anywhere; }
+    .type-label { font-size: 10px; color: #697961; font-weight: 700; margin: 0 0 8px; }
+    #types, .badges { display: flex; flex-wrap: wrap; gap: 6px; list-style: none; padding: 0; margin: 0; }
+    .type { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 5px; border-radius: 5px; padding: 6px 9px; background: var(--type-bg, #e8edf1); border: 1px solid #00000010; color: #273640; font-size: 11px; font-weight: 800; }
+    .type::before { content: ''; width: 5px; height: 5px; border-radius: 50%; background: currentColor; opacity: .45; }
+    .type small { font: 10px ui-monospace, monospace; opacity: .8; }
+    .type strong { margin-left: 3px; padding-left: 6px; border-left: 1px solid #33443330; font: 800 12px ui-monospace, monospace; }
+    .measurements { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 25px 0 0; }
+    .measurements div { border-top: 1px solid #cdd7c2; padding-top: 12px; }
+    dt { font-size: 11px; color: #66765f; }
+    dd { font: 700 24px/1.4 ui-monospace, monospace; margin: 4px 0 0; font-variant-numeric: tabular-nums; }
+    .field-nav { display: flex; flex-wrap: wrap; gap: 7px; margin: 17px 0; }
+    .field-nav a { color: #4a6247; text-decoration: none; font-size: 11px; font-weight: 700; padding: 7px 11px; border: 1px solid #c8d1bf; border-radius: 5px; }
+    .field-nav a:hover { background: #e2e8d4; border-color: #9eaf8c; }
+    .details-grid { display: grid; grid-template-columns: 1fr 1.12fr; gap: 16px; align-items: start; }
+    .section-heading { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 17px; }
+    h3 { font-size: 18px; margin: 0; letter-spacing: -.04em; }
+    .section-index { color: #8c603c; font: 700 9px ui-monospace, monospace; margin-bottom: 7px; display: block; letter-spacing: .14em; }
+    .total { white-space: nowrap; color: #405737; border: 1px solid #c3d1ae; background: #ecf1de; border-radius: 8px; padding: 8px 12px; font-size: 10px; text-align: center; }
+    .total strong { display: block; font: 800 24px ui-monospace, monospace; }
+    .stat-row { display: grid; grid-template-columns: 60px 30px 1fr; gap: 10px; align-items: center; margin: 16px 0; font-size: 11px; }
+    .stat-value { font: 800 13px ui-monospace, monospace; text-align: right; }
+    .stat-bar { height: 10px; overflow: hidden; border-radius: 2px; background: #e5eadc; }
+    .stat-fill { display: block; height: 100%; width: var(--value); border-radius: inherit; background: repeating-linear-gradient(90deg, transparent 0 8px, #fffdf660 8px 10px), var(--bar-color, #508877); animation: meter-arrive .6s ease-out; transform-origin: left; }
+    @keyframes meter-arrive { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+    .match-group { padding: 14px 0; border-top: 1px solid #e2e6d8; }
+    .match-group h4 { font-size: 11px; margin: 0 0 9px; }
+    .match-group[data-kind="weak"] h4 { color: #ad4735; }
+    .match-group[data-kind="resist"] h4 { color: #3f7154; }
+    .none { color: #6b7469; font-size: 12px; margin: 0; }
+    #matchup-status, .extra-status { color: #60715a; font-size: 11px; line-height: 1.9; }
+    #retry-types, .small-button { margin: 6px 5px 6px 0; font-size: 11px; padding: 9px 12px; }
+    summary { font-size: 11px; cursor: pointer; padding: 10px 0; color: #5d6b5b; }
+    details .badges { padding-bottom: 12px; }
+    .empty { text-align: center; padding: 44px 24px; background: repeating-linear-gradient(90deg, transparent 0 27px, #66885506 27px 28px), #f9fbf0; border: 1px dashed #b4c2a6; }
+    .empty-kicker { display: block; font: 10px ui-monospace, monospace; letter-spacing: .14em; color: #71875e; margin-bottom: 12px; }
+    .empty h2 { font-size: 23px; letter-spacing: -.06em; margin: 0 0 10px; }
+    .empty p { color: #64745f; font-size: 12px; line-height: 1.9; margin: 0; }
+    .pokeball { display: block; width: 58px; height: 58px; margin: 0 auto 24px; border: 3px solid #354d3d; border-radius: 50%; background: linear-gradient(#d78852 0 45%, #354d3d 45% 55%, #faf7df 55%); position: relative; transform: rotate(-17deg); box-shadow: 0 0 0 12px #e4ebd3, 0 0 0 13px #becba7; }
+    .pokeball::after { content: ''; position: absolute; width: 18px; height: 18px; border: 3px solid #354d3d; background: #f9f7e7; border-radius: 50%; top: 17px; left: 17px; }
+    .extra-panel { margin-top: 16px; }
+    .info-list { display: grid; gap: 12px; margin-top: 14px; }
+    #ability-list { grid-template-columns: repeat(auto-fit, minmax(min(100%, 270px), 1fr)); }
+    .info-card { border: 1px solid #d8e0cb; border-radius: 8px; padding: 18px; background: #f6f8ee; min-width: 0; position: relative; }
+    #ability-list .info-card { border-left: 3px solid var(--accent); }
+    .info-card h4 { font-size: 16px; margin: 0; overflow-wrap: anywhere; letter-spacing: -.035em; }
+    .info-header { display: flex; justify-content: space-between; gap: 10px; align-items: start; flex-wrap: wrap; }
+    .english-name { display: block; margin-top: 6px; font: 10px ui-monospace, monospace; color: #6a7a5d; overflow-wrap: anywhere; letter-spacing: 0; }
+    .ability-label { background: #e1e9d1; border: 1px solid #cedabb; border-radius: 4px; padding: 4px 7px; font-size: 10px; color: #496042; }
+    .ability-label.hidden-ability { background: #e9def5; color: #76508c; border-color: #d5c4e9; }
+    .description { font-size: 12px; line-height: 1.9; margin: 14px 0 0; white-space: pre-line; overflow-wrap: anywhere; }
+    .move-numbers { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin: 14px 0 0; }
+    .move-numbers div { border-top: 1px solid #d5ddc8; padding-top: 9px; }
+    .move-numbers dt { font-size: 10px; }
+    .move-numbers dd { font-size: 17px; margin-top: 5px; }
+    #move-list { grid-template-columns: repeat(auto-fit, minmax(min(100%, 290px), 1fr)); }
+    #move-list .info-card { border-top: 3px solid #b29356; background: #faf7e9; }
+    .move-meta { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; align-items: center; }
+    .move-category { font-size: 10px; color: #607057; }
+    footer { padding: 19px 30px; background: #e7eadc; border-top: 1px solid #cbd3bd; font-size: 10px; color: #65765b; line-height: 1.9; text-align: center; }
+    footer a { color: #355c45; text-underline-offset: 3px; }
+    [hidden] { display: none !important; }
+    @media (max-width: 760px) { .details-grid { grid-template-columns: 1fr; } .shell { padding: 20px; } .overview { gap: 22px; } .identity { padding-right: 20px; } .viewer { padding: 12px; } .panel { padding: 20px; } .overview, .search-panel { padding: 0; } .search-panel { padding-bottom: 18px; } .art { min-height: 250px; } }
+    @media (max-width: 530px) { body { padding: 12px 8px 28px; } main { border-radius: 15px; } header { padding: 20px; } .masthead { margin-bottom: 24px; } .brand { font-size: 10px; } .edition { font-size: 8px; } .field-stamp { display: none; } .shell { padding: 14px; } .search-row { flex-direction: column; } .keyboard-hint { display: none; } .overview { grid-template-columns: 1fr; gap: 0; } .viewer { border-right: 0; border-bottom: 1px solid #283e3020; } .art { min-height: 235px; } .art img { width: 220px; height: 220px; } .identity { padding: 24px; } .measurements { margin-top: 20px; } #name { font-size: 36px; } .stat-row { gap: 7px; } .field-nav { gap: 5px; } .field-nav a { font-size: 10px; padding: 7px 8px; } }
+    @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } *, *::before, *::after { animation: none !important; transition: none !important; } }
+
+    .move-video { margin-top: 18px; padding-top: 15px; border-top: 1px dashed #c6d0b7; }
+    .video-label { font: 700 9px ui-monospace, monospace; letter-spacing: .13em; color: #8c603c; margin: 0 0 10px; }
+    .video-poster { display: block; aspect-ratio: 16 / 9; position: relative; background: #213b32; border-radius: 8px; overflow: hidden; color: #f6f7e5; text-decoration: none; }
+    .video-poster img { width: 100%; height: 100%; object-fit: cover; display: block; opacity: .78; transition: opacity .2s; }
+    .video-poster:hover img { opacity: 1; }
+    .video-play { position: absolute; inset: 0; display: grid; place-content: center; gap: 8px; text-align: center; font-size: 11px; text-shadow: 0 1px 4px #000; background: linear-gradient(transparent 40%, #142a2990); }
+    .video-play b { font-size: 30px; background: #203b32dd; border: 1px solid #d5e2b8; width: 58px; height: 58px; display: grid; place-items: center; border-radius: 50%; margin: auto; }
+    .video-links { display: flex; flex-wrap: wrap; gap: 7px; margin: 10px 0; }
+    .video-link { display: inline-flex; align-items: center; padding: 8px 10px; border: 1px solid #b5c5a4; border-radius: 5px; color: #34513b; background: #e9efdb; font-size: 11px; font-weight: 700; text-decoration: none; }
+    .video-link:hover { background: #dce7c9; }
+    .video-credit { color: #637357; font-size: 10px; line-height: 1.9; margin: 9px 0; }
+    .video-empty { color: #647259; font-size: 11px; line-height: 1.9; margin: 8px 0; }
+    .video-editor { display: grid; gap: 8px; }
+    .video-editor label { font-size: 11px; }
+    .video-editor input { width: 100%; min-width: 0; padding: 10px; font-size: 12px; }
+    .video-editor button { padding: 9px 12px; font-size: 11px; justify-self: start; }
+    .video-message { font-size: 11px; line-height: 1.8; color: #9d3f36; margin: 0; }
+    .video-frame { width: 100%; aspect-ratio: 16 / 9; border: 0; border-radius: 8px; background: #1e3530; }
+
+    #video-list { grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr)); }
+    #video-list .info-card { background: #f3f6e9; border-top: 3px solid var(--accent); }
+    #video-list .move-video { border-top: 0; margin-top: 14px; padding-top: 0; }
+    #video-panel { border-color: #b8c8a6; }
+</style>
+</head>
+<body>
+  <main>
+    <header>
+      <div class="masthead">
+        <div class="device-lights" aria-hidden="true"><span class="lens"></span><span class="led"></span><span class="led"></span></div>
+        <span class="brand">POKÉ FIELD NOTES</span><span class="edition">TRAINER'S FIELD KIT / 01</span>
+      </div>
+      <div class="heading-row">
+        <div><div class="eyebrow">작은 발견이 모여, 나만의 모험이 된다</div>
+        <h1>탐험가의 포켓몬 도감</h1>
+        <p class="intro">풀숲 너머, 어떤 포켓몬이 기다릴까요?<br>이름을 찾아 기록하고, 숨겨진 능력을 발견하세요.</p></div>
+        <div class="field-stamp" aria-label="이번 탐험에서 발견한 포켓몬 수"><span>DISCOVERED</span><strong id="discovery-count">00</strong><span>이번 탐험</span></div>
+      </div>
+    </header>
+    <div class="shell">
+    <form id="search-form" class="panel search-panel" novalidate>
+      <div class="search-topline"><label for="query">탐험할 포켓몬 · 번호 또는 영어 이름</label><span class="keyboard-hint" aria-hidden="true">ENTER ↵ TO DISCOVER</span></div>
+      <div class="search-row">
+        <input id="query" name="pokemon" type="text" placeholder="예: 25 또는 pikachu" autocomplete="off" autocapitalize="none" spellcheck="false" aria-describedby="search-hint" enterkeyhint="search">
+        <button type="submit">포켓몬 찾기 ↗</button>
+      </div>
+      <p id="search-hint" class="hint">영어 대소문자는 구분하지 않아요. 입력 후 Enter 키로도 검색할 수 있어요.</p>
+    </form>
+    <div id="recent" class="recent" hidden><span class="recent-label">최근 발견</span><div id="recent-list" aria-label="최근에 조회한 포켓몬"></div></div>
+    <p id="status" role="status" aria-live="polite" aria-atomic="true">검색하면 실제 포켓몬 정보를 불러옵니다.</p>
+    <section id="result-area" aria-label="검색 결과" aria-busy="false">
+      <div id="empty" class="panel empty"><span class="pokeball" aria-hidden="true"></span><span class="empty-kicker">YOUR NEXT DISCOVERY AWAITS</span><h2>첫 번째 발견을 기다리고 있어요.</h2><p>번호나 영어 이름으로 포켓몬을 찾아보세요.<br>종족값부터 특성, 전용기 후보까지 탐험 기록에 담아드릴게요.</p></div>
+      <article id="card" class="result" aria-labelledby="name" hidden>
+        <div class="panel overview">
+          <div class="viewer">
+            <div class="viewer-label"><span>POKÉMON OBSERVATION</span><span aria-hidden="true">＋</span></div>
+            <div id="art" class="art"></div>
+            <div class="viewer-bottom"><span class="viewer-dashes" aria-hidden="true">▰ ▰ ▰ ▱ ▱</span><span id="type-caption">관찰 기록</span></div>
+          </div>
+          <div class="identity">
+            <p class="specimen-label">FIELD RECORD / 발견한 포켓몬</p>
+            <p id="number"></p>
+            <h2 id="name"></h2>
+            <p class="type-label">포켓몬 타입</p>
+            <ul id="types" aria-label="포켓몬 타입"></ul>
+            <dl class="measurements"><div><dt>키</dt><dd id="height"></dd></div><div><dt>몸무게</dt><dd id="weight"></dd></div></dl>
+          </div>
+        </div>
+        <nav class="field-nav" aria-label="포켓몬 상세 정보 바로가기"><a href="#stats-panel">01 종족값</a><a href="#matchup-panel">02 상성</a><a href="#ability-panel">03 특성</a><a href="#move-panel">04 전용기 후보</a><a href="#video-panel">05 사용 영상</a></nav>
+        <div class="details-grid">
+          <section id="stats-panel" class="panel" aria-labelledby="stats-title">
+            <div class="section-heading"><div><span class="section-index">01 / BASE STATS</span><h3 id="stats-title">종족값</h3></div><div class="total">합계<strong id="stat-total"></strong></div></div>
+            <div id="stats"></div>
+            <p class="section-note">종족 고유의 기본 능력치예요. 레벨·성격·개체값·노력치에 따라 실제 능력치는 달라져요. 막대는 255를 기준으로 표시해요.</p>
+          </section>
+          <section id="matchup-panel" class="panel" aria-labelledby="matchup-title" aria-busy="false">
+            <div class="section-heading"><div><span class="section-index">02 / TYPE MATCHUP</span><h3 id="matchup-title">타입 상성</h3></div></div>
+            <p class="section-note">이 포켓몬이 <strong>공격받을 때</strong>의 피해 배율이에요. 복합 타입은 두 타입의 배율을 곱해 계산해요.</p>
+            <p id="matchup-status" role="status" aria-live="polite"></p>
+            <button id="retry-types" type="button" hidden>상성 다시 불러오기</button>
+            <div id="matchup-groups"></div>
+            <p class="section-note">현재 API 타입 상성 기준 · 특성, 도구, 날씨, 테라스탈 등의 효과는 반영하지 않아요.</p>
+          </section>
+        </div>
+
+        <section id="ability-panel" class="panel extra-panel" aria-labelledby="ability-title" aria-busy="false">
+          <div class="section-heading"><div><span class="section-index">03 / ABILITIES</span><h3 id="ability-title">특성 · 포켓몬의 능력</h3></div></div>
+          <p class="section-note">일반 특성과 숨겨진 특성을 모두 표시해요. 각 개체는 보통 이 중 하나의 특성을 가집니다.</p>
+          <p id="ability-status" class="extra-status" role="status" aria-live="polite"></p>
+          <button id="retry-abilities" class="small-button" type="button" hidden>특성 다시 불러오기</button>
+          <div id="ability-list" class="info-list"></div>
+        </section>
+        <section id="move-panel" class="panel extra-panel" aria-labelledby="move-title" aria-busy="false">
+          <div class="section-heading"><div><span class="section-index">04 / SIGNATURE MOVES</span><h3 id="move-title">전용기 후보</h3></div></div>
+          <p class="section-note">이 포켓몬의 기술 중 <strong>같은 진화 계열과 그 폼만 배울 수 있는 기술</strong>을 찾아요. API의 전체 습득 목록 기준이므로 특정 게임의 공식 전용기 목록과는 다를 수 있어요.</p>
+          <p id="move-status" class="extra-status" role="status" aria-live="polite"></p>
+          <button id="stop-moves" class="small-button" type="button" hidden>확인 중지</button>
+          <button id="retry-moves" class="small-button" type="button" hidden>전용기 다시 확인</button>
+          <div id="move-list" class="info-list"></div>
+          <p class="section-note">기술이 많으면 확인에 시간이 걸릴 수 있어요. 확인한 기술과 특성 정보는 페이지를 열어둔 동안 재사용해요. 전용기 후보가 없는 포켓몬도 있어요. 영상은 외부 소개 자료이며 게임 버전에 따라 연출이 다를 수 있어요.</p>
+        </section>
+        <section id="video-panel" class="panel extra-panel" aria-labelledby="video-title" aria-busy="false">
+          <div class="section-heading"><div><span class="section-index">05 / MOVE THEATER</span><h3 id="video-title">전용기 사용 영상</h3></div></div>
+          <p class="section-note">아래에서 기술별 사용 영상을 볼 수 있어요. 썸네일을 누르면 유튜브 새 창으로 열립니다. 소개·모음 영상은 여러 기술을 함께 보여줄 수 있어요.</p>
+          <p id="video-status" class="extra-status">전용기를 확인하면 관련 영상이 여기에 표시돼요.</p>
+          <div id="video-list" class="info-list"></div>
+        </section>
+      </article>
+    </section>
+    </div>
+    <footer>데이터: <a href="https://pokeapi.co/docs/v2" target="_blank" rel="noopener noreferrer">PokéAPI</a> · 처음 조회할 때는 인터넷 연결이 필요해요.<br>조회한 정보는 이 페이지를 열어둔 동안 기억해요.</footer>
+  </main>
+  <script>
+    'use strict';
+    const form = document.getElementById('search-form');
+    const input = document.getElementById('query');
+    const status = document.getElementById('status');
+    const area = document.getElementById('result-area');
+    const card = document.getElementById('card');
+    const empty = document.getElementById('empty');
+    const cache = new Map();
+    const pending = new Map();
+    let latestSearch = 0;
+
+
+    // 색과 번역은 표시용이며, 포켓몬 수치와 상성은 모두 API에서 가져옵니다.
+    const typeStyles = {
+      normal: ['노말', '#e5e4d8', '#85856d'], fire: ['불꽃', '#ffddc5', '#cd6431'],
+      water: ['물', '#d4e6ff', '#4d80c7'], electric: ['전기', '#fff0ae', '#b58a1f'],
+      grass: ['풀', '#dcefc9', '#63964b'], ice: ['얼음', '#cff0ee', '#469d9a'],
+      fighting: ['격투', '#f4d6cf', '#af5745'], poison: ['독', '#ebd6f0', '#9660a6'],
+      ground: ['땅', '#ecdfbd', '#a28442'], flying: ['비행', '#e0e1fb', '#7c7eb5'],
+      psychic: ['에스퍼', '#fbd4e4', '#bd6186'], bug: ['벌레', '#e7ecbd', '#8b963f'],
+      rock: ['바위', '#e9dfc8', '#978151'], ghost: ['고스트', '#dfd9ee', '#7b689f'],
+      dragon: ['드래곤', '#dbd9fa', '#7560bc'], dark: ['악', '#e0dad5', '#7d6d60'],
+      steel: ['강철', '#dfe5eb', '#7b8c9c'], fairy: ['페어리', '#f9dfed', '#b776a0']
+    };
+    const statLabels = {
+      hp: ['HP', '#68a16b'], attack: ['공격', '#d18b45'], defense: ['방어', '#c5a543'],
+      'special-attack': ['특수공격', '#688ec5'], 'special-defense': ['특수방어', '#8eaf61'],
+      speed: ['스피드', '#c6788d']
+    };
+    const typeCache = new Map();
+    const typePending = new Map();
+    let currentPokemon = null;
+
+
+    const discoveries = new Map();
+
+    function updateFieldTheme(data) {
+      const palette = typeStyles[data.types[0]?.type.name];
+      const accent = palette?.[2] || '#769e68';
+      const scene = palette?.[1] || '#e4efb6';
+      const main = document.querySelector('main');
+      main.style.setProperty('--scene', scene);
+      main.style.setProperty('--accent', accent);
+      document.getElementById('type-caption').textContent = data.types.map(entry => typeStyles[entry.type.name]?.[0] || entry.type.name).join(' / ') + ' 타입 관찰';
+      // 페이지를 열어둔 동안의 실제 조회 결과만 기록합니다.
+      discoveries.delete(data.id);
+      discoveries.set(data.id, { id: data.id, name: data.name });
+      document.getElementById('discovery-count').textContent = String(discoveries.size).padStart(2, '0');
+      const list = document.getElementById('recent-list');
+      list.replaceChildren();
+      for (const entry of [...discoveries.values()].reverse().slice(0, 8)) {
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.className = 'recent-button';
+        button.textContent = '#' + String(entry.id).padStart(3, '0') + ' ' + entry.name;
+        button.setAttribute('aria-label', entry.name + ' 다시 보기');
+        if (entry.id === data.id) button.setAttribute('aria-current', 'true');
+        button.addEventListener('click', () => {
+          input.value = entry.name;
+          form.requestSubmit();
+        });
+        list.append(button);
+      }
+      document.getElementById('recent').hidden = false;
+    }
+
+    function typeBadge(name, multiplier, tag = 'li') {
+      const badge = document.createElement(tag);
+      const info = typeStyles[name];
+      badge.className = 'type';
+      badge.style.setProperty('--type-bg', info?.[1] || '#e8edf1');
+      const label = document.createElement('span');
+      label.textContent = info?.[0] || name;
+      badge.append(label);
+      if (info) {
+        const english = document.createElement('small');
+        english.textContent = name;
+        badge.append(english);
+      }
+      if (multiplier !== undefined) {
+        const value = document.createElement('strong');
+        value.textContent = '×' + multiplier;
+        badge.append(value);
+      }
+      return badge;
+    }
+
+    function renderDetails(data) {
+      currentPokemon = data;
+      updateFieldTheme(data);
+      card.style.setProperty('--accent', typeStyles[data.types[0]?.type.name]?.[2] || '#4e7772');
+      document.getElementById('height').textContent = Number.isFinite(data.height) ? (data.height / 10).toLocaleString('ko-KR') + ' m' : '정보 없음';
+      document.getElementById('weight').textContent = Number.isFinite(data.weight) ? (data.weight / 10).toLocaleString('ko-KR') + ' kg' : '정보 없음';
+      const rows = document.getElementById('stats');
+      rows.replaceChildren();
+      let total = 0;
+      let complete = true;
+      for (const [key, [label, color]] of Object.entries(statLabels)) {
+        const value = data.stats?.find(entry => entry.stat.name === key)?.base_stat;
+        const valid = Number.isFinite(value);
+        if (valid) total += value;
+        else complete = false;
+        const row = document.createElement('div');
+        row.className = 'stat-row';
+        const name = document.createElement('span');
+        name.textContent = label;
+        const number = document.createElement('span');
+        number.className = 'stat-value';
+        number.textContent = valid ? String(value) : '—';
+        const bar = document.createElement('div');
+        bar.className = 'stat-bar';
+        bar.setAttribute('aria-hidden', 'true');
+        const fill = document.createElement('span');
+        fill.className = 'stat-fill';
+        fill.style.setProperty('--value', (valid ? Math.min(100, Math.max(0, value / 255 * 100)) : 0) + '%');
+        fill.style.setProperty('--bar-color', color);
+        bar.append(fill);
+        row.append(name, number, bar);
+        rows.append(row);
+      }
+      document.getElementById('stat-total').textContent = complete ? String(total) : '—';
+    }
+
+    async function fetchType(name) {
+      if (typeCache.has(name)) return typeCache.get(name);
+      if (typePending.has(name)) return typePending.get(name);
+      const request = (async () => {
+        const controller = new AbortController();
+        const timeout = setTimeout(() => controller.abort(), 15000);
+        try {
+          const response = await fetch('https://pokeapi.co/api/v2/type/' + encodeURIComponent(name) + '/', { method: 'GET', signal: controller.signal });
+          if (!response.ok) throw new Error('type-server');
+          const data = await response.json();
+          for (const key of ['double_damage_from', 'half_damage_from', 'no_damage_from']) {
+            if (!Array.isArray(data.damage_relations?.[key]) || !data.damage_relations[key].every(type => typeof type.name === 'string')) throw new Error('invalid-type');
+          }
+          typeCache.set(name, data);
+          return data;
+        } finally { clearTimeout(timeout); }
+      })();
+      typePending.set(name, request);
+      try { return await request; }
+      finally { typePending.delete(name); }
+    }
+
+    function defensiveMultipliers(typeData) {
+      const multipliers = Object.fromEntries(Object.keys(typeStyles).map(name => [name, 1]));
+      for (const data of typeData) {
+        for (const [key, factor] of [['double_damage_from', 2], ['half_damage_from', 0.5], ['no_damage_from', 0]]) {
+          for (const type of data.damage_relations[key]) {
+            multipliers[type.name] = (multipliers[type.name] ?? 1) * factor;
+          }
+        }
+      }
+      return multipliers;
+    }
+
+    function renderMatchups(typeData) {
+      const target = document.getElementById('matchup-groups');
+      target.replaceChildren();
+      const entries = Object.entries(defensiveMultipliers(typeData));
+      const groups = [
+        ['weak', '약점 · 더 큰 피해', value => value > 1],
+        ['resist', '반감 · 더 작은 피해', value => value > 0 && value < 1],
+        ['immune', '무효 · 피해 없음', value => value === 0],
+        ['neutral', '보통 · 1배 피해', value => value === 1]
+      ];
+      for (const [kind, title, filter] of groups) {
+        const section = document.createElement(kind === 'neutral' ? 'details' : 'div');
+        section.className = 'match-group';
+        section.dataset.kind = kind;
+        const heading = document.createElement(kind === 'neutral' ? 'summary' : 'h4');
+        heading.textContent = title;
+        section.append(heading);
+        const matches = entries.filter(([, value]) => filter(value)).sort((a, b) => b[1] - a[1]);
+        if (matches.length) {
+          const list = document.createElement('ul');
+          list.className = 'badges';
+          for (const [name, multiplier] of matches) list.append(typeBadge(name, multiplier));
+          section.append(list);
+        } else {
+          const note = document.createElement('p');
+          note.className = 'none';
+          note.textContent = '해당하는 타입이 없어요.';
+          section.append(note);
+        }
+        target.append(section);
+      }
+    }
+
+    async function loadMatchups(data, searchId) {
+      const panel = document.getElementById('matchup-panel');
+      const message = document.getElementById('matchup-status');
+      const retry = document.getElementById('retry-types');
+      document.getElementById('matchup-groups').replaceChildren();
+      panel.setAttribute('aria-busy', 'true');
+      message.textContent = '타입 상성을 불러오는 중이에요…';
+      message.dataset.kind = '';
+      retry.hidden = true;
+      try {
+        const results = await Promise.all(data.types.map(entry => fetchType(entry.type.name)));
+        if (searchId !== latestSearch) return;
+        renderMatchups(results);
+        message.textContent = '타입 상성을 확인했어요.';
+      } catch (error) {
+        if (searchId !== latestSearch) return;
+        message.textContent = '상성 정보를 불러오지 못했어요. 연결을 확인한 뒤 다시 시도해 주세요. 기본 정보는 계속 볼 수 있어요.';
+        message.dataset.kind = 'error';
+        retry.hidden = false;
+      } finally {
+        if (searchId === latestSearch) panel.setAttribute('aria-busy', 'false');
+      }
+    }
+    document.getElementById('retry-types').addEventListener('click', () => {
+      if (currentPokemon) void loadMatchups(currentPokemon, latestSearch);
+    });
+
+
+    const detailCache = new Map();
+    const detailPending = new Map();
+    let moveRun = 0;
+
+    // 성공한 상세 응답과 진행 중인 요청을 함께 재사용합니다. 실패는 재시도합니다.
+    async function fetchDetail(resource, id) {
+      const key = resource + '/' + id;
+      if (detailCache.has(key)) return detailCache.get(key);
+      if (detailPending.has(key)) return detailPending.get(key);
+      const request = (async () => {
+        const controller = new AbortController();
+        const timer = setTimeout(() => controller.abort(), 15000);
+        try {
+          const response = await fetch('https://pokeapi.co/api/v2/' + resource + '/' + encodeURIComponent(id) + '/', { method: 'GET', signal: controller.signal });
+          if (!response.ok) throw new Error('detail-server');
+          const result = await response.json();
+          if (!result || typeof result !== 'object' || Array.isArray(result)) throw new Error('invalid-detail');
+          if (resource === 'move' && (!Array.isArray(result.learned_by_pokemon) || !result.type || typeof result.name !== 'string')) throw new Error('invalid-move');
+          if (resource === 'ability' && typeof result.name !== 'string') throw new Error('invalid-ability');
+          if (resource === 'pokemon-species' && (!Array.isArray(result.varieties) || !result.evolution_chain?.url)) throw new Error('invalid-species');
+          if (resource === 'evolution-chain' && !result.chain?.species?.name) throw new Error('invalid-chain');
+          detailCache.set(key, result);
+          return result;
+        } finally { clearTimeout(timer); }
+      })();
+      detailPending.set(key, request);
+      try { return await request; }
+      finally { detailPending.delete(key); }
+    }
+
+    function localizedName(data) {
+      return data.names?.find(entry => entry.language.name === 'ko')?.name || data.name;
+    }
+
+    function cleanDescription(text, chance) {
+      return String(text || '').replace(/\$effect_chance/g, chance == null ? '정해진 확률' : String(chance)).replace(/[\n\r\f]+/g, ' ').replace(/\s+/g, ' ').trim();
+    }
+
+    function descriptionFor(data) {
+      const effects = data.effect_entries || [];
+      const flavors = data.flavor_text_entries || [];
+      for (const language of ['ko', 'en']) {
+        const effect = effects.find(entry => entry.language.name === language && (entry.effect || entry.short_effect));
+        if (effect) return { text: cleanDescription(effect.effect || effect.short_effect, data.effect_chance), language };
+        // 버전 그룹 번호가 가장 큰, 해당 언어의 제공 문구를 선택합니다.
+        const texts = flavors.filter(entry => entry.language.name === language && entry.flavor_text).sort((a, b) => {
+          const number = entry => Number(entry.version_group?.url?.match(/\/(\d+)\/$/)?.[1] || 0);
+          return number(b) - number(a);
+        });
+        if (texts.length) return { text: cleanDescription(texts[0].flavor_text, data.effect_chance), language, version: texts[0].version_group?.name };
+      }
+      return { text: 'API에 제공된 효과 설명이 없어요.', language: 'ko' };
+    }
+
+    function detailHeading(data, tagText, hiddenAbility = false) {
+      const header = document.createElement('div');
+      header.className = 'info-header';
+      const heading = document.createElement('h4');
+      heading.textContent = localizedName(data);
+      const english = document.createElement('span');
+      english.className = 'english-name';
+      english.textContent = data.name;
+      heading.append(english);
+      header.append(heading);
+      if (tagText) {
+        const tag = document.createElement('span');
+        tag.className = 'ability-label' + (hiddenAbility ? ' hidden-ability' : '');
+        tag.textContent = tagText;
+        header.append(tag);
+      }
+      return header;
+    }
+
+    function appendDescription(target, data) {
+      const description = descriptionFor(data);
+      const text = document.createElement('p');
+      text.className = 'description';
+      text.textContent = description.text;
+      target.append(text);
+      if (description.language === 'en' || description.version) {
+        const note = document.createElement('p');
+        note.className = 'section-note';
+        note.textContent = [description.language === 'en' ? '한국어 설명 미제공 · 영어 원문' : '', description.version ? '설명 버전: ' + description.version : ''].filter(Boolean).join(' · ');
+        target.append(note);
+      }
+    }
+
+    async function loadAbilities(data, searchId) {
+      const panel = document.getElementById('ability-panel');
+      const list = document.getElementById('ability-list');
+      const status = document.getElementById('ability-status');
+      const retry = document.getElementById('retry-abilities');
+      list.replaceChildren();
+      panel.setAttribute('aria-busy', 'true');
+      status.dataset.kind = '';
+      status.textContent = '특성과 효과를 불러오는 중이에요…';
+      retry.hidden = true;
+      const abilities = Array.isArray(data.abilities) ? data.abilities : [];
+      try {
+        const results = await Promise.allSettled(abilities.map(entry => fetchDetail('ability', entry.ability.name)));
+        if (searchId !== latestSearch) return;
+        let failures = 0;
+        results.forEach((result, index) => {
+          const entry = abilities[index];
+          const item = document.createElement('div');
+          item.className = 'info-card';
+          const detail = result.status === 'fulfilled' ? result.value : { name: entry.ability.name };
+          item.append(detailHeading(detail, entry.is_hidden ? '숨겨진 특성' : '일반 특성', entry.is_hidden));
+          if (result.status === 'fulfilled') appendDescription(item, detail);
+          else {
+            failures++;
+            const note = document.createElement('p');
+            note.className = 'description';
+            note.textContent = '특성 설명을 불러오지 못했어요. 다시 시도해 주세요.';
+            item.append(note);
+          }
+          list.append(item);
+        });
+        status.textContent = failures ? '일부 특성 설명을 불러오지 못했어요.' : abilities.length ? '특성 ' + abilities.length + '개를 확인했어요.' : 'API에 등록된 특성이 없어요.';
+        status.dataset.kind = failures ? 'error' : '';
+        retry.hidden = failures === 0;
+      } finally {
+        if (searchId === latestSearch) panel.setAttribute('aria-busy', 'false');
+      }
+    }
+
+    // 전체 진화 계열과 각 종의 폼 이름을 수집해 전용기 후보의 범위를 만듭니다.
+    async function familyMembers(data, active) {
+      if (!data.species?.name) throw new Error('missing-species');
+      const species = await fetchDetail('pokemon-species', data.species.name);
+      if (!active()) return null;
+      const chainId = species.evolution_chain.url.match(/\/evolution-chain\/(\d+)\/?$/)?.[1];
+      if (!chainId) throw new Error('invalid-chain-url');
+      const chain = await fetchDetail('evolution-chain', chainId);
+      if (!active()) return null;
+      const names = new Set();
+      function visit(node) {
+        names.add(node.species.name);
+        for (const child of node.evolves_to || []) visit(child);
+      }
+      visit(chain.chain);
+      const members = new Set();
+      // 계열이 큰 포켓몬도 필요 이상으로 한꺼번에 요청하지 않습니다.
+      for (const name of names) {
+        if (!active()) return null;
+        const detail = name === data.species.name ? species : await fetchDetail('pokemon-species', name);
+        for (const variety of detail.varieties) members.add(variety.pokemon.name);
+      }
+      if (!members.has(data.name)) throw new Error('incomplete-family');
+      return members;
+    }
+
+    function isFamilyExclusive(move, members, pokemonName) {
+      const learners = move.learned_by_pokemon;
+      return Array.isArray(learners) && learners.length > 0 &&
+        learners.some(entry => entry.name === pokemonName) && learners.every(entry => members.has(entry.name));
+    }
+
+
+    // 영상은 PokeAPI 기술 수치와 별도로 연결한 외부 자료입니다.
+    // 출처: https://www.youtube.com/watch?v=T0vuhOBiUp4 (PAG Center, 2023-01-26)
+    // 출처: https://www.youtube.com/watch?v=5uWAMwcRGmU (공식 Sun/Moon 소개 영상)
+    const moveVideoCatalog = new Map();
+    const svShowcase = { id: 'T0vuhOBiUp4', title: '스칼렛·바이올렛 전용기 모음 Part 1', credit: 'PAG Center · 게임 플레이 모음 · 베트남어', note: '여러 기술이 함께 나오는 모음 영상이에요. 해당 기술의 장면을 찾아보세요.' };
+    for (const name of ['rage-fist', 'raging-bull', 'chilly-reception', 'twin-beam', 'hyper-drill', 'flower-trick', 'torch-song', 'aqua-step', 'silk-trap', 'double-shock', 'population-bomb', 'tidy-up', 'salt-cure', 'armor-cannon', 'bitter-blade', 'last-respects']) moveVideoCatalog.set(name, svShowcase);
+    const alolaShowcase = { id: '5uWAMwcRGmU', title: '썬·문 스타팅 최종 진화와 기술 소개', credit: 'The Official Pokémon YouTube channel · 공식 소개 · 영어', note: '모크나이퍼·어흥염·누리레느가 함께 등장하는 소개 영상이에요.' };
+    for (const name of ['spirit-shackle', 'darkest-lariat', 'sparkling-aria']) moveVideoCatalog.set(name, alolaShowcase);
+    const customMoveVideos = new Map();
+
+    function parseYouTubeId(value) {
+      try {
+        const url = new URL(value.trim());
+        if (url.protocol !== 'https:' || url.username || url.password || url.port) return null;
+        let id;
+        if (url.hostname === 'youtu.be') id = url.pathname.split('/')[1];
+        else if (['youtube.com', 'www.youtube.com', 'm.youtube.com', 'www.youtube-nocookie.com'].includes(url.hostname)) {
+          if (url.pathname === '/watch') id = url.searchParams.get('v');
+          else if (/^\/(shorts|embed|live)\//.test(url.pathname)) id = url.pathname.split('/')[2];
+        }
+        return /^[A-Za-z0-9_-]{11}$/.test(id || '') ? id : null;
+      } catch { return null; }
+    }
+
+    function externalLink(text, url, className = 'video-link') {
+      const link = document.createElement('a');
+      link.textContent = text;
+      link.href = url;
+      link.target = '_blank';
+      link.rel = 'noopener noreferrer';
+      link.className = className;
+      return link;
+    }
+
+    function createMoveVideo(move, pokemon) {
+      const section = document.createElement('div');
+      section.className = 'move-video';
+      const key = (pokemon?.name || 'pokemon') + '/' + move.name;
+      const title = document.createElement('p');
+      title.className = 'video-label';
+      title.textContent = 'MOVE IN ACTION / 사용 영상';
+      section.append(title);
+      const display = document.createElement('div');
+      section.append(display);
+      const controls = document.createElement('div');
+      controls.className = 'video-links';
+      const query = ['Pokemon', pokemon?.name || '', move.name.replace(/-/g, ' '), 'move gameplay'].filter(Boolean).join(' ');
+      controls.append(externalLink('다른 사용 영상 찾기 ↗', 'https://www.youtube.com/results?search_query=' + encodeURIComponent(query)));
+      section.append(controls);
+      const editor = document.createElement('details');
+      const summary = document.createElement('summary');
+      summary.textContent = '원하는 유튜브 영상 연결';
+      editor.append(summary);
+      const editorContent = document.createElement('div');
+      editorContent.className = 'video-editor';
+      const label = document.createElement('label');
+      label.textContent = localizedName(move) + ' 영상 주소';
+      const input = document.createElement('input');
+      input.type = 'url';
+      input.placeholder = 'https://www.youtube.com/watch?v=…';
+      input.setAttribute('aria-label', localizedName(move) + ' 유튜브 영상 주소');
+      label.append(input);
+      const save = document.createElement('button');
+      save.type = 'button';
+      save.textContent = '이 기술에 연결';
+      const reset = document.createElement('button');
+      reset.type = 'button';
+      reset.textContent = '직접 연결한 영상 해제';
+      reset.hidden = !customMoveVideos.has(key);
+      const message = document.createElement('p');
+      message.className = 'video-message';
+      message.setAttribute('role', 'status');
+      const memoryNote = document.createElement('p');
+      memoryNote.className = 'section-note';
+      memoryNote.textContent = '연결한 영상은 이 페이지를 열어둔 동안 기억해요. 직접 연결한 영상의 내용은 자동 검증하지 않아요.';
+      editorContent.append(label, save, reset, message, memoryNote);
+      editor.append(editorContent);
+      section.append(editor);
+
+      function showVideo() {
+        display.replaceChildren();
+        const video = customMoveVideos.get(key) || moveVideoCatalog.get(move.name);
+        if (!video) {
+          const note = document.createElement('p');
+          note.className = 'video-empty';
+          note.textContent = '아직 연결된 영상이 없어요. 포켓몬 이름과 기술명으로 사용 영상을 찾아보세요.';
+          display.append(note);
+          return;
+        }
+        const watchURL = 'https://www.youtube.com/watch?v=' + video.id;
+        const poster = externalLink('', watchURL, 'video-poster');
+        poster.setAttribute('aria-label', localizedName(move) + ' 소개 영상 유튜브에서 보기 (새 창)');
+        const image = document.createElement('img');
+        image.alt = video.title;
+        image.loading = 'lazy';
+        image.src = 'https://i.ytimg.com/vi/' + video.id + '/hqdefault.jpg';
+        image.onerror = () => { image.hidden = true; };
+        const play = document.createElement('span');
+        play.className = 'video-play';
+        const icon = document.createElement('b');
+        icon.textContent = '▶';
+        icon.setAttribute('aria-hidden', 'true');
+        const playText = document.createElement('span');
+        playText.textContent = 'YouTube에서 보기 ↗';
+        play.append(icon, playText);
+        poster.append(image, play);
+        display.append(poster);
+        const credit = document.createElement('p');
+        credit.className = 'video-credit';
+        credit.textContent = video.title + ' · ' + video.credit + '\n' + (video.note || '');
+        display.append(credit);
+        // file://에서는 Referer를 보낼 수 없어 YouTube 재생이 제한됩니다.
+        // 로컬 사용자는 원본 영상 링크로 재생하고, HTTP(S)에서만 내장 재생을 제공합니다.
+        if (['https:', 'http:'].includes(window.location.protocol)) {
+          const embed = document.createElement('button');
+          embed.type = 'button';
+          embed.className = 'small-button';
+          embed.textContent = '도감 안에서 재생';
+          const player = document.createElement('div');
+          embed.addEventListener('click', () => {
+            const iframe = document.createElement('iframe');
+            iframe.className = 'video-frame';
+            iframe.title = localizedName(move) + ' 사용 영상';
+            iframe.src = 'https://www.youtube-nocookie.com/embed/' + video.id;
+            iframe.referrerPolicy = 'strict-origin-when-cross-origin';
+            iframe.allow = 'encrypted-media; picture-in-picture; fullscreen';
+            iframe.allowFullscreen = true;
+            player.replaceChildren(iframe);
+            embed.hidden = true;
+          });
+          display.append(embed, player);
+        }
+        const note = document.createElement('p');
+        note.className = 'video-credit';
+        note.textContent = window.location.protocol === 'file:' ? '로컬 파일에서는 썸네일을 눌러 유튜브 새 창에서 재생해요.' : '재생이 제한되거나 영상이 삭제되었다면 유튜브에서 열거나 다른 영상을 찾아주세요.';
+        display.append(note);
+      }
+      function saveVideo() {
+        const id = parseYouTubeId(input.value);
+        if (!id) {
+          message.textContent = '올바른 https 유튜브 영상 주소를 입력해 주세요. 일반 영상·Shorts·youtu.be 주소를 사용할 수 있어요.';
+          input.setAttribute('aria-invalid', 'true');
+          return;
+        }
+        input.removeAttribute('aria-invalid');
+        customMoveVideos.set(key, { id, title: localizedName(move) + ' · 직접 연결한 영상', credit: '사용자 선택 영상' });
+        reset.hidden = false;
+        message.textContent = '영상을 연결했어요. 썸네일을 눌러 재생하세요.';
+        showVideo();
+      }
+      save.addEventListener('click', saveVideo);
+      input.addEventListener('keydown', event => {
+        if (event.key === 'Enter') { event.preventDefault(); saveVideo(); }
+      });
+      reset.addEventListener('click', () => {
+        customMoveVideos.delete(key);
+        reset.hidden = true;
+        input.value = '';
+        input.removeAttribute('aria-invalid');
+        message.textContent = '직접 연결한 영상을 해제했어요.';
+        showVideo();
+      });
+      showVideo();
+      return section;
+    }
+
+    function renderMove(move) {
+      const item = document.createElement('div');
+      item.className = 'info-card';
+      item.append(detailHeading(move, '진화 계열 전용 후보'));
+      const meta = document.createElement('div');
+      meta.className = 'move-meta';
+      meta.append(typeBadge(move.type.name, undefined, 'span'));
+      const category = document.createElement('span');
+      category.className = 'move-category';
+      category.textContent = { physical: '물리 기술', special: '특수 기술', status: '변화 기술' }[move.damage_class?.name] || '분류 정보 없음';
+      meta.append(category);
+      item.append(meta);
+      const values = document.createElement('dl');
+      values.className = 'move-numbers';
+      for (const [label, value] of [['위력', move.power ?? '—'], ['명중률', move.accuracy == null ? '—' : move.accuracy + '%'], ['PP', move.pp ?? '—'], ['우선도', move.priority ?? '—']]) {
+        const cell = document.createElement('div');
+        const term = document.createElement('dt');
+        term.textContent = label;
+        const number = document.createElement('dd');
+        number.textContent = String(value);
+        cell.append(term, number);
+        values.append(cell);
+      }
+      item.append(values);
+      appendDescription(item, move);
+      const note = document.createElement('p');
+      note.className = 'section-note';
+      note.textContent = '—: 수치가 없거나 가변인 항목 · 습득 목록은 세대·폼에 따라 다를 수 있어요.';
+      item.append(note);
+      return item;
+    }
+
+    async function loadSignatureMoves(data, searchId) {
+      const runId = ++moveRun;
+      const active = () => searchId === latestSearch && runId === moveRun;
+      const panel = document.getElementById('move-panel');
+      const status = document.getElementById('move-status');
+      const list = document.getElementById('move-list');
+      const videoList = document.getElementById('video-list');
+      const videoPanel = document.getElementById('video-panel');
+      const videoStatus = document.getElementById('video-status');
+      function setMoveStatus(message) {
+        status.textContent = message;
+        videoStatus.textContent = message;
+      }
+      const retry = document.getElementById('retry-moves');
+      const stop = document.getElementById('stop-moves');
+      list.replaceChildren();
+      videoList.replaceChildren();
+      videoPanel.setAttribute('aria-busy', 'true');
+      panel.setAttribute('aria-busy', 'true');
+      status.dataset.kind = '';
+      setMoveStatus('진화 계열을 확인하는 중이에요…');
+      retry.hidden = true;
+      stop.hidden = false;
+      try {
+        const moves = [...new Set((data.moves || []).map(entry => entry.move.name))];
+        if (!moves.length) {
+          setMoveStatus('API에 등록된 기술이 없어 전용기를 확인할 수 없어요.');
+          return;
+        }
+        const members = await familyMembers(data, active);
+        if (!active()) return;
+        let index = 0;
+        let completed = 0;
+        let failures = 0;
+        let unknown = 0;
+        let found = 0;
+        const update = () => { setMoveStatus('기술 확인 중 ' + completed + ' / ' + moves.length + ' · 전용기 후보 ' + found + '개'); };
+        update();
+        async function worker() {
+          while (active() && index < moves.length) {
+            const name = moves[index++];
+            try {
+              const move = await fetchDetail('move', name);
+              if (!active()) return;
+              if (!move.learned_by_pokemon.some(entry => entry.name === data.name)) unknown++;
+              else if (isFamilyExclusive(move, members, data.name)) {
+                found++;
+                list.append(renderMove(move));
+                const videoCard = document.createElement('div');
+                videoCard.className = 'info-card';
+                videoCard.append(detailHeading(move), createMoveVideo(move, data));
+                videoList.append(videoCard);
+              }
+            } catch (error) {
+              if (!active()) return;
+              failures++;
+            }
+            completed++;
+            if (active()) update();
+          }
+        }
+        // 최대 4개의 기술 요청만 병렬로 보냅니다. 검색이 바뀌면 후속 요청을 중지합니다.
+        await Promise.all(Array.from({ length: Math.min(4, moves.length) }, worker));
+        if (!active()) return;
+        const incomplete = failures + unknown;
+        setMoveStatus(incomplete
+          ? '전용기 후보 ' + found + '개 확인 · ' + failures + '개 조회 실패, ' + unknown + '개 습득 목록 미확인. 아직 전체 결과가 아니에요.'
+          : found ? '기술 ' + completed + '개 확인 완료 · 전용기 후보 ' + found + '개를 찾았어요.'
+          : '기술 ' + completed + '개를 확인했지만, 이 기준에 맞는 전용기 후보가 없어요.');
+        status.dataset.kind = failures ? 'error' : '';
+        retry.hidden = failures === 0;
+      } catch (error) {
+        if (!active()) return;
+        setMoveStatus('전용기를 확인하지 못했어요. 인터넷 연결을 확인하고 다시 시도해 주세요.');
+        status.dataset.kind = 'error';
+        retry.hidden = false;
+      } finally {
+        if (active()) {
+          stop.hidden = true;
+          panel.setAttribute('aria-busy', 'false');
+          videoPanel.setAttribute('aria-busy', 'false');
+        }
+      }
+    }
+
+    document.getElementById('retry-abilities').addEventListener('click', () => {
+      if (currentPokemon) void loadAbilities(currentPokemon, latestSearch);
+    });
+    document.getElementById('retry-moves').addEventListener('click', () => {
+      if (currentPokemon) void loadSignatureMoves(currentPokemon, latestSearch);
+    });
+    document.getElementById('stop-moves').addEventListener('click', () => {
+      moveRun++;
+      document.getElementById('stop-moves').hidden = true;
+      document.getElementById('retry-moves').hidden = false;
+      document.getElementById('move-panel').setAttribute('aria-busy', 'false');
+      document.getElementById('move-status').textContent = '확인을 중지했어요. 지금 보이는 후보는 일부 결과예요. 다시 확인하면 저장한 정보를 재사용해요.';
+      document.getElementById('video-panel').setAttribute('aria-busy', 'false');
+      document.getElementById('video-status').textContent = '확인을 중지했어요. 지금 보이는 영상은 확인된 일부 기술의 영상이에요.';
+    });
+
+    function announce(message, kind = '') {
+      status.textContent = message;
+      status.dataset.kind = kind;
+    }
+
+    function normalize(value) {
+      const query = value.trim().toLowerCase();
+      // 025와 25도 같은 번호로 조회합니다.
+      return /^\d+$/.test(query) ? query.replace(/^0+(?=\d)/, '') : query;
+    }
+
+    async function fetchPokemon(query) {
+      if (cache.has(query)) return cache.get(query);
+      if (pending.has(query)) return pending.get(query);
+      const request = (async () => {
+        const controller = new AbortController();
+        const timeout = setTimeout(() => controller.abort(), 15000);
+        try {
+          const response = await fetch('https://pokeapi.co/api/v2/pokemon/' + encodeURIComponent(query) + '/', {
+            method: 'GET', signal: controller.signal
+          });
+          if (response.status === 404) {
+            cache.set(query, null);
+            return null;
+          }
+          if (!response.ok) throw new Error('server');
+          const data = await response.json();
+          if (typeof data.name !== 'string' || !Array.isArray(data.types) ||
+              !data.types.every(entry => typeof entry?.type?.name === 'string')) {
+            throw new Error('invalid-data');
+          }
+          // 번호와 이름 중 어느 쪽으로 다시 검색해도 같은 응답을 재사용합니다.
+          cache.set(query, data);
+          cache.set(String(data.id), data);
+          cache.set(data.name.toLowerCase(), data);
+          return data;
+        } finally {
+          clearTimeout(timeout);
+        }
+      })();
+      pending.set(query, request);
+      try { return await request; }
+      finally { pending.delete(query); }
+    }
+
+    function renderPokemon(data) {
+      document.getElementById('number').textContent = 'No. ' + String(data.id).padStart(4, '0');
+      document.getElementById('name').textContent = data.name;
+      const types = document.getElementById('types');
+      types.replaceChildren();
+      for (const entry of data.types) {
+        types.append(typeBadge(entry.type.name));
+      }
+      const art = document.getElementById('art');
+      const note = document.createElement('p');
+      note.id = 'image-note';
+      note.setAttribute('role', 'status');
+      art.replaceChildren(note);
+      const imageURL = data.sprites?.front_default;
+      if (imageURL) {
+        const img = document.createElement('img');
+        img.alt = data.name + ' 정면 모습';
+        img.hidden = true;
+        note.textContent = '이미지를 불러오는 중이에요.';
+        img.onload = () => { img.hidden = false; note.hidden = true; };
+        img.onerror = () => {
+          img.hidden = true;
+          note.hidden = false;
+          note.textContent = '이미지를 불러오지 못했어요. 이름과 타입은 확인할 수 있어요.';
+        };
+        art.append(img);
+        img.src = imageURL;
+      } else {
+        note.textContent = '등록된 정면 이미지가 없어요. 이름과 타입은 확인할 수 있어요.';
+      }
+      renderDetails(data);
+      card.hidden = false;
+    }
+
+    form.addEventListener('submit', async event => {
+      event.preventDefault();
+      const searchId = ++latestSearch;
+      const query = normalize(input.value);
+      card.hidden = true;
+      currentPokemon = null;
+      empty.hidden = true;
+      area.setAttribute('aria-busy', 'false');
+      input.removeAttribute('aria-invalid');
+      if (!query) {
+        announce('포켓몬 번호나 영어 이름을 입력해 주세요.', 'error');
+        input.setAttribute('aria-invalid', 'true');
+        input.focus();
+        return;
+      }
+      const reused = cache.has(query);
+      announce('포켓몬 정보를 불러오는 중이에요…');
+      area.setAttribute('aria-busy', 'true');
+      try {
+        const data = await fetchPokemon(query);
+        // 이전 요청이 늦게 끝나도 가장 최근 검색 화면을 덮어쓰지 않습니다.
+        if (searchId !== latestSearch) return;
+        if (data === null) {
+          announce('“' + query + '”에 해당하는 포켓몬이 없어요. 번호나 영어 이름을 확인해 주세요. (404)', 'error');
+          return;
+        }
+        renderPokemon(data);
+        void loadMatchups(data, searchId);
+        void loadAbilities(data, searchId);
+        void loadSignatureMoves(data, searchId);
+        announce(data.name + '을(를) 찾았어요.' + (reused ? ' 이 페이지에서 기억한 정보를 표시했어요.' : ''), 'success');
+      } catch (error) {
+        if (searchId !== latestSearch) return;
+        if (error.message === 'server') {
+          announce('포켓몬 서버에 문제가 생겼어요. 잠시 후 다시 검색해 주세요.', 'error');
+        } else if (error.message === 'invalid-data' || error instanceof SyntaxError) {
+          announce('포켓몬 정보를 읽지 못했어요. 잠시 후 다시 검색해 주세요.', 'error');
+        } else {
+          announce('연결하지 못했어요. 인터넷 연결을 확인하고 다시 검색해 주세요.', 'error');
+        }
+      } finally {
+        if (searchId === latestSearch) area.setAttribute('aria-busy', 'false');
+      }
+    });
+  </script>
+</body>
+</html>

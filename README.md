@@ -1,2 +1,2 @@
-# my-first-game
-my first game
+# -
+타르코프 형식의 게임개발
